@@ -501,7 +501,7 @@ class LyapunovNetwork(nn.Module):
     def __init__(self, input_dim, layer_dims, activations, eps=1e-1,
                  initializer=torch.nn.init.xavier_normal_, name='lyapunov_network'):
         super(LyapunovNetwork, self).__init__()
-        self.input_dim = input_dim
+        self.input_dim = int(input_dim)
         self.num_layers = len(layer_dims)
         self.activations = activations
         self.eps = eps
@@ -516,7 +516,7 @@ class LyapunovNetwork(nn.Module):
         else:
             raise ValueError('Each layer must maintain or increase the dimension of its input!')
 
-        self.kernel_0 = nn.Linear(16, 256).type(PY_DTYPE)
+        self.kernel_0 = nn.Linear(self.input_dim, 256).type(PY_DTYPE)
         self.kernel_1 = nn.Linear(256, 256).type(PY_DTYPE)
         self.kernel_2 = nn.Linear(256, 256).type(PY_DTYPE)
 
@@ -524,7 +524,7 @@ class LyapunovNetwork(nn.Module):
         self.initializer(self.kernel_1.weight)
         self.initializer(self.kernel_2.weight)
 
-        self.kernel_0.weight.data.add_(self.eps * torch.eye(256, 16, dtype=torch.float64))
+        self.kernel_0.weight.data.add_(self.eps * torch.eye(256, self.input_dim, dtype=torch.float64))
         self.kernel_1.weight.data.add_(self.eps * torch.eye(256, dtype=torch.float64))
         self.kernel_2.weight.data.add_(self.eps * torch.eye(256, dtype=torch.float64))
 
