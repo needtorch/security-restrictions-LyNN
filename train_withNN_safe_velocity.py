@@ -21,7 +21,7 @@ from rl.evaluation import evaluate
 from rl.wrappers import wrap_gym
 import pickle
 from matplotlib import pyplot as plt
-from Lyapunov_related import lyapunov_neural_network, lyapunov_train, lyapunov_train_pre, lyapunov_train_walker
+from Lyapunov_related import lyapunov_neural_network, lyapunov_train, lyapunov_train_pre
 from utilities import Dynamics_NN
 import safe_learning
 FLAGS = flags.FLAGS
@@ -230,7 +230,7 @@ def main(_):
 
             if i == 999:
                 torch.set_num_threads(16)
-                states_all = np.array(observation_ly).astype(np.float64).reshape(-1, 27)
+                states_all = np.array(observation_ly).astype(np.float64).reshape(-1, env.observation_space.shape[0])
                 index_ly = np.array(index_all).astype(np.float64).reshape(-1, 1)
                 # cost_ly = np.array(cost)
                 cost_ly = np.array(cost).reshape(1, -1)
@@ -251,7 +251,7 @@ def main(_):
                     return True
 
                 states_dim = x_ly.shape[1]
-                lyapunov_function, L_v = lyapunov_neural_network(states_dim)
+                lyapunov_function, L_v = lyapunov_neural_network(env.observation_space.shape[0])
                 tau = 0
                 L_dyn = 1.3
                 dynamics = Dynamics_NN(x_ly, y_ly)
@@ -270,7 +270,7 @@ def main(_):
 
             if i % 2000 ==0 and i > 1000 and i<= 50000:
                 # torch.set_num_threads(16)
-                states_all = np.array(observation_ly).astype(np.float64).reshape(-1, 27)
+                states_all = np.array(observation_ly).astype(np.float64).reshape(-1, env.observation_space.shape[0])
                 index_ly = np.array(index_all).astype(np.float64).reshape(-1, 1)
                 # cost_ly = np.array(cost)
                 cost_ly = np.array(cost).reshape(1, -1)
@@ -291,7 +291,7 @@ def main(_):
                     return True
 
                 states_dim = x_ly.shape[1]
-                lyapunov_function, L_v = lyapunov_neural_network(states_dim)
+                lyapunov_function, L_v = lyapunov_neural_network(env.observation_space.shape[0])
                 tau = 0
                 L_dyn = 1.3
                 dynamics = Dynamics_NN(x_ly, y_ly)
@@ -365,17 +365,7 @@ def main(_):
             pickle.dump(length_eval_pure, f)
         # with open('./reward_velocity_walker/cost_1M'+str(FLAGS.seed)+'.pkl', 'wb') as f:
         #     pickle.dump(cost, f)
-        # dir_path = 'saved'
-        #
-        # # 检查目录是否存在
-        # if os.path.exists(dir_path):
-        #     # 删除目录及其内容
-        #     shutil.rmtree(dir_path)
-        #     print(f"目录 {dir_path} 及其内容已删除")
-        # else:
-        #     print(f"目录 {dir_path} 不存在")
-        #
-        # env.close()
+        env.close()
 
 if __name__ == '__main__':
     app.run(main)
