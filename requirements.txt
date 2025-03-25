@@ -1,0 +1,16 @@
+pip
+jax[cuda]
+--find-links https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+flax
+tqdm
+safety-gymnasium 
+tensorflow
+tensorflow_probability
+ml_collections
+wandb
+dm_control
+pytorch = 2.2.0
+pybullet
+attrs
+filterpy
+future
